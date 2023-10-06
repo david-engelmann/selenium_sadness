@@ -1,0 +1,29 @@
+version: "3.8"
+
+networks:
+  selenium-net:
+    name: selenium-net
+    driver: bridge
+    ipam:
+      driver: default
+
+services:
+  selenium-sadness:
+    image: selenium-sadness
+
+    user: root
+
+    # run test from docker compose
+    command: ["sh", "-c", "python3 selenium_sadness.py"]
+
+    # leave running
+    #command: ["sh", "-c", "sleep infinity"]
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CHROME_BINARY_PATH: "${CHROME_BINARY_PATH:-/usr/bin}"
+
+    ports:
+      - "4321:4321"
