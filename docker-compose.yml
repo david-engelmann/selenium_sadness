@@ -27,3 +27,6 @@ services:
 
     ports:
       - "4321:4321"
+
+    networks:
+      - selenium-net
