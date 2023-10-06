@@ -35,7 +35,7 @@ class Crawller(object):
         browser.get(self.url)
         await asyncio.sleep(0.001)
         print(
-            f"content from browser.get: {browser.page_source}\nend of {self.url} fetch_data"
+            f"length of content from browser.get: {len(browser.page_source)}\nend of {self.url} fetch_data"
         )
         return len(browser.page_source)
 
