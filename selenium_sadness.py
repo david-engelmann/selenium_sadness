@@ -1,5 +1,6 @@
 import asyncio
 import os
+import time
 
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -29,15 +30,25 @@ class Crawller(object):
         self.chrome_options.add_argument("--headless")
 
     async def fetch_data(self):
-        print(f"start of fetch_data:\ngonna go to url: {self.url}")
-        browser = webdriver.Chrome(options=self.chrome_options)
-        print(f"brower initialized with options for {self.url}: {browser}")
+        start_time = time.time()
+        # cant print or i/o block
+        # print(f"start of fetch_data:\ngonna go to url: {self.url}")
+        chrome_service = Service(ChromeDriverManager().install())
+        browser = webdriver.Chrome(service=chrome_service, options=self.chrome_options)
+        # print(f"brower initialized with options for {self.url}: {browser}")
         browser.get(self.url)
+        if self.office_id == 2:
+            await asyncio.sleep(5)
+        elif self.office_id == 4:
+            await asyncio.sleep(10)
+
         await asyncio.sleep(0.001)
-        print(
-            f"length of content from browser.get: {len(browser.page_source)}\nend of {self.url} fetch_data"
-        )
-        return len(browser.page_source)
+        # print(
+        #    f"length of content from browser.get: {len(browser.page_source)}\nend of {self.url} fetch_data"
+        # )
+        end_time = time.time()
+        run_time = end_time - start_time
+        return {self.url: {"length": len(browser.page_source), "run_time": run_time}}
 
 
 async def main():
@@ -54,9 +65,20 @@ async def main():
         for i in range(2, number_of_offices)
     ]
     results = await asyncio.gather(*crawllers)
-    print(results)
+    print(f"results from the experiment:\n{results}")
+    page_2_run_time = [
+        result["https://quotes.toscrape.com/page/2/"]["run_time"]
+        for result in results
+        if "https://quotes.toscrape.com/page/2/" in result
+    ][0]
+    page_3_run_time = [
+        result["https://quotes.toscrape.com/page/3/"]["run_time"]
+        for result in results
+        if "https://quotes.toscrape.com/page/3/" in result
+    ][0]
+    assert page_2_run_time > page_3_run_time
     for result in results:
-        assert result
+        assert list(result.values())[0]["length"] > 0
 
 
 if __name__ == "__main__":
