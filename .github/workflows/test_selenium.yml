@@ -16,10 +16,6 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest-xdist
 
       - name: chrome install
         run: |
@@ -52,6 +48,11 @@ jobs:
               && chown root:root ${CHROME_BINARY_PATH}/chromedriver \
               && chmod +x ${CHROME_BINARY_PATH}/chromedriver \
               && apt-get update && apt-get -y upgrade
+
+      - name: Install dependencies
+        run: |
+          pip3 install -r requirements.txt
+          pip3 install pytest-xdist
 
       - name: Run tests
         run: pytest -n auto
