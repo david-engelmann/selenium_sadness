@@ -41,7 +41,7 @@ class Crawller(object):
 
 
 async def main():
-    number_of_offices = 50
+    number_of_offices = 10
     base_dir = os.getenv("CHROME_BINARY_PATH", "/usr/bin")
     print(f"starting test with {number_of_offices} offices\n")
     print(f"using base dir: {base_dir}\n")
