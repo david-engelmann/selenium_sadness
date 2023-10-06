@@ -4,7 +4,11 @@ on: [push , pull_request]
 
 jobs:
   test_async_selenium:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+      options: --user root
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
